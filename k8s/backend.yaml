@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: three-tier-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: <ACR_NAME>.azurecr.io/backend:latest
+        ports:
+        - containerPort: 5000
+
+        env:
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+
+        - name: MONGO_DB
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_DATABASE
+
+        - name: MONGO_HOST
+          value: mongo
+
+        - name: MONGO_PORT
+          value: "27017"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: three-tier-app
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 5000
+      targetPort: 5000
