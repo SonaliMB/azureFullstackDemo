@@ -11,7 +11,7 @@ pipeline {
 
         stage('Clone') {
             steps {
-                git clone 'https://github.com/SonaliMB/azureFullstackDemo.git'
+                git 'https://github.com/SonaliMB/azureFullstackDemo.git'
             }
         }
 
