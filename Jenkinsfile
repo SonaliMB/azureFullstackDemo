@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     environment {
-        ACR_NAME = "youracrname"
-        RESOURCE_GROUP = "devops-rg"
-        AKS_CLUSTER = "myAKSCluster"
+        ACR_NAME = "myacrsonali"
+        RESOURCE_GROUP = "devopsRG"
+        AKS_CLUSTER = "aksclustersonali"
     }
 
     stages {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/YOURUSER/YOURREPO.git'
+                git 'https://github.com/SonaliMB/azureFullstackDemo.git'
             }
         }
 
