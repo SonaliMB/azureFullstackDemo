@@ -9,6 +9,12 @@ pipeline {
 
     stages {
 
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
         stage('Clone') {
             steps {
                 git branch: 'main', url: 'https://github.com/SonaliMB/azureFullstackDemo.git'
@@ -17,13 +23,17 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                sh 'docker build -t $ACR_NAME.azurecr.io/backend:latest ./backend'
+                sh '''
+                docker build -t $ACR_NAME.azurecr.io/backend:latest ./backend
+                '''
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t $ACR_NAME.azurecr.io/frontend:latest ./frontend'
+                sh '''
+                docker build -t $ACR_NAME.azurecr.io/frontend:latest ./frontend
+                '''
             }
         }
 
@@ -32,10 +42,15 @@ pipeline {
                 withCredentials([string(credentialsId: 'azure-sp', variable: 'AZURE_CREDENTIALS')]) {
                     sh '''
                     echo $AZURE_CREDENTIALS > azure.json
+
+                    CLIENT_ID=$(cat azure.json | grep clientId | cut -d '"' -f4)
+                    CLIENT_SECRET=$(cat azure.json | grep clientSecret | cut -d '"' -f4)
+                    TENANT_ID=$(cat azure.json | grep tenantId | cut -d '"' -f4)
+
                     az login --service-principal \
-                      --username $(jq -r .clientId azure.json) \
-                      --password $(jq -r .clientSecret azure.json) \
-                      --tenant $(jq -r .tenantId azure.json)
+                      --username $CLIENT_ID \
+                      --password $CLIENT_SECRET \
+                      --tenant $TENANT_ID
                     '''
                 }
             }
@@ -44,7 +59,11 @@ pipeline {
         stage('Push Images') {
             steps {
                 sh '''
+                echo "Checking images..."
+                docker images
+
                 az acr login --name $ACR_NAME
+
                 docker push $ACR_NAME.azurecr.io/backend:latest
                 docker push $ACR_NAME.azurecr.io/frontend:latest
                 '''
