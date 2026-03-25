@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: <ACR_NAME>.azurecr.io/backend:latest
+        image: myacrsonali.azurecr.io/backend:latest
         ports:
         - containerPort: 5000
 

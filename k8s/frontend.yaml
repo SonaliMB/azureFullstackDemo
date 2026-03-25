@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: <ACR_NAME>.azurecr.io/frontend:latest
+        image: myacrsonali.azurecr.io/frontend:latest
         ports:
         - containerPort: 80
 
