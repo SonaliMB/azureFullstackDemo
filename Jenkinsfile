@@ -80,7 +80,7 @@ pipeline {
 
                 kubectl apply -f k8s/namespace.yaml
                 kubectl apply -f k8s/secret.yaml
-                kubectl apply -f k8s/mongo.yaml
+                kubectl apply -f k8s/mongodb.yaml
                 kubectl apply -f k8s/backend.yaml
                 kubectl apply -f k8s/frontend.yaml
                 '''
