@@ -39,13 +39,13 @@ pipeline {
 
         stage('Azure Login') {
             steps {
-                withCredentials([string(credentialsId: 'azure-sp', variable: 'AZURE_CREDENTIALS')]) {
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'CLIENT_ID'),
+                    string(credentialsId: 'azure-client-secret', variable: 'CLIENT_SECRET'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'TENANT_ID')
+                ]) {
                     sh '''
-                    echo $AZURE_CREDENTIALS > azure.json
-
-                    CLIENT_ID=$(cat azure.json | grep clientId | cut -d '"' -f4)
-                    CLIENT_SECRET=$(cat azure.json | grep clientSecret | cut -d '"' -f4)
-                    TENANT_ID=$(cat azure.json | grep tenantId | cut -d '"' -f4)
+                    echo "Logging into Azure..."
 
                     az login --service-principal \
                       --username $CLIENT_ID \
@@ -75,7 +75,8 @@ pipeline {
                 sh '''
                 az aks get-credentials \
                   --resource-group $RESOURCE_GROUP \
-                  --name $AKS_CLUSTER --overwrite-existing
+                  --name $AKS_CLUSTER \
+                  --overwrite-existing
 
                 kubectl apply -f k8s/namespace.yaml
                 kubectl apply -f k8s/secret.yaml
