@@ -20,7 +20,7 @@ const {
 let mongoURI;
 
 if (MONGO_USER && MONGO_PASS) {
-    mongoURI = mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin;
+    const mongoURI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`;
 } else {
     // fallback (dev mode)
     mongoURI = process.env.MONGO_URI || "mongodb://mongo:27017/mydb";
