@@ -20,6 +20,9 @@ spec:
         - containerPort: 5000
 
         env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017/mydb
+        
         - name: MONGO_USER
           valueFrom:
             secretKeyRef:
